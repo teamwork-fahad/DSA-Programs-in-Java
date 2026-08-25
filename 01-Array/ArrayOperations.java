@@ -1,6 +1,7 @@
 import java.util.Arrays;
 import java.util.Scanner;
 
+//Array
 public class ArrayOperations {
     private static final int MAX_SIZE = 100;
 
