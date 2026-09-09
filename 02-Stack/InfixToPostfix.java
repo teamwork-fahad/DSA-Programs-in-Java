@@ -1,65 +1,141 @@
+// Java Program to Convert Infix Expression to Postfix
+
 import java.util.Scanner;
-import java.util.Stack;
 
 public class InfixToPostfix {
-    private static int precedence(char operator) {
-        return switch (operator) {
-            case '+', '-' -> 1;
-            case '*', '/' -> 2;
-            case '^' -> 3;
-            default -> 0;
-        };
+
+    static final int SIZE = 100;
+
+    static char[] stack = new char[SIZE];
+    static int top = -1;
+
+    // Push character into stack
+    static void push(char ch) {
+        top++;
+        stack[top] = ch;
     }
 
-    private static String convert(String expression) {
-        StringBuilder postfix = new StringBuilder();
-        Stack<Character> operators = new Stack<>();
+    // Pop character from stack
+    static char pop() {
+        char ch = stack[top];
+        top--;
+        return ch;
+    }
 
-        for (char symbol : expression.toCharArray()) {
-            if (Character.isWhitespace(symbol)) {
-                continue;
-            }
-            if (Character.isLetterOrDigit(symbol)) {
-                postfix.append(symbol);
-            } else if (symbol == '(') {
-                operators.push(symbol);
-            } else if (symbol == ')') {
-                while (!operators.isEmpty() && operators.peek() != '(') {
-                    postfix.append(operators.pop());
-                }
-                if (operators.isEmpty()) {
-                    throw new IllegalArgumentException("Unbalanced parentheses.");
-                }
-                operators.pop();
-            } else if (precedence(symbol) > 0) {
-                while (!operators.isEmpty() && operators.peek() != '('
-                        && (precedence(operators.peek()) > precedence(symbol)
-                        || (precedence(operators.peek()) == precedence(symbol) && symbol != '^'))) {
-                    postfix.append(operators.pop());
-                }
-                operators.push(symbol);
-            } else {
-                throw new IllegalArgumentException("Unsupported symbol: " + symbol);
-            }
+    // Display stack as String
+    static String getStack() {
+        StringBuilder str = new StringBuilder();
+
+        for (int i = 0; i <= top; i++) {
+            str.append(stack[i]);
         }
 
-        while (!operators.isEmpty()) {
-            if (operators.peek() == '(') {
-                throw new IllegalArgumentException("Unbalanced parentheses.");
-            }
-            postfix.append(operators.pop());
-        }
-        return postfix.toString();
+        return str.toString();
     }
 
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter infix expression: ");
-        String expression = scanner.nextLine();
-        try {
-            System.out.println("Postfix expression = " + convert(expression));
-        } catch (IllegalArgumentException exception) {
-            System.out.println("Invalid expression: " + exception.getMessage());
+
+        Scanner sc = new Scanner(System.in);
+
+        int step = 1;
+
+        System.out.println("\n==============================================");
+        System.out.println("       INFIX TO POSTFIX CONVERSION");
+        System.out.println("==============================================");
+
+        System.out.print("\nEnter Infix Expression : ");
+        String infix = sc.nextLine();
+
+        // Add brackets for easy conversion
+        push('(');
+        infix = infix + ")";
+
+        StringBuilder postfix = new StringBuilder();
+
+        System.out.println("\n\n----------------------------------------------");
+        System.out.println(" Step\tSymbol\t\tStack\t\tPostfix");
+        System.out.println("----------------------------------------------");
+
+        for (int i = 0; i < infix.length(); i++) {
+
+            char symbol = infix.charAt(i);
+
+            switch (symbol) {
+
+                // Opening bracket
+                case '(':
+                    push(symbol);
+                    break;
+
+                // Closing bracket
+                case ')':
+
+                    while (stack[top] != '(') {
+                        postfix.append(pop());
+                    }
+
+                    pop(); // Remove '('
+                    break;
+
+                // + and -
+                case '+':
+                case '-':
+
+                    while (top >= 0 &&
+                           (stack[top] == '^' ||
+                            stack[top] == '/' ||
+                            stack[top] == '*' ||
+                            stack[top] == '+' ||
+                            stack[top] == '-')) {
+
+                        postfix.append(pop());
+                    }
+
+                    push(symbol);
+                    break;
+
+                // * and /
+                case '*':
+                case '/':
+
+                    while (top >= 0 &&
+                           (stack[top] == '^' ||
+                            stack[top] == '*' ||
+                            stack[top] == '/')) {
+
+                        postfix.append(pop());
+                    }
+
+                    push(symbol);
+                    break;
+
+                // ^
+                case '^':
+                    push(symbol);
+                    break;
+
+                // Operand
+                default:
+                    postfix.append(symbol);
+            }
+
+            System.out.printf(
+                    "\n %2d\t  %c\t\t%-10s\t%s",
+                    step,
+                    symbol,
+                    getStack(),
+                    postfix
+            );
+
+            step++;
         }
+
+        System.out.println("\n----------------------------------------------");
+
+        System.out.println("\n==============================================");
+        System.out.println("      POSTFIX EXPRESSION = " + postfix);
+        System.out.println("==============================================");
+
+        sc.close();
     }
 }
