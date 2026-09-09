@@ -1,5 +1,3 @@
-// Java Program to Convert Infix Expression to Prefix
-
 import java.util.Scanner;
 
 public class InfixToPrefix {
@@ -22,49 +20,12 @@ public class InfixToPrefix {
         return ch;
     }
 
-    // Display stack as String
-    static String getStack() {
-        StringBuilder str = new StringBuilder();
-
-        for (int i = 0; i <= top; i++) {
-            str.append(stack[i]);
-        }
-
-        return str.toString();
-    }
-
-    // Check operator
-    static boolean isOperator(char ch) {
-        return ch == '+' || ch == '-' ||
-               ch == '*' || ch == '/' ||
-               ch == '^';
-    }
-
-    // Get precedence
-    static int precedence(char ch) {
-
-        switch (ch) {
-            case '^':
-                return 3;
-
-            case '*':
-            case '/':
-                return 2;
-
-            case '+':
-            case '-':
-                return 1;
-
-            default:
-                return 0;
-        }
-    }
-
     public static void main(String[] args) {
 
         Scanner sc = new Scanner(System.in);
 
-        int step = 1;
+        int i;
+        int j = 0;
 
         System.out.println("\n==============================================");
         System.out.println("        INFIX TO PREFIX CONVERSION");
@@ -73,103 +34,107 @@ public class InfixToPrefix {
         System.out.print("\nEnter Infix Expression : ");
         String infix = sc.nextLine();
 
-        /*
-         * Step 1:
-         * Reverse the infix expression
-         */
-        StringBuilder reversed = new StringBuilder(infix).reverse();
+        // Reverse infix expression
+        String reversed = "";
 
-        /*
-         * Step 2:
-         * Replace '(' with ')' and ')' with '('
-         */
-        for (int i = 0; i < reversed.length(); i++) {
+        for (i = infix.length() - 1; i >= 0; i--) {
 
-            if (reversed.charAt(i) == '(') {
-                reversed.setCharAt(i, ')');
+            if (infix.charAt(i) == '(') {
+                reversed = reversed + ')';
             }
-            else if (reversed.charAt(i) == ')') {
-                reversed.setCharAt(i, '(');
+            else if (infix.charAt(i) == ')') {
+                reversed = reversed + '(';
+            }
+            else {
+                reversed = reversed + infix.charAt(i);
             }
         }
 
-        StringBuilder postfix = new StringBuilder();
+        // Temporary array for postfix
+        char[] temp = new char[SIZE];
 
-        System.out.println("\n\n----------------------------------------------");
-        System.out.println(" Step\tSymbol\t\tStack\t\tPostfix");
-        System.out.println("----------------------------------------------");
+        // Convert reversed expression into postfix
+        for (i = 0; i < reversed.length(); i++) {
 
-        /*
-         * Step 3:
-         * Convert reversed expression into postfix
-         */
-        for (int i = 0; i < reversed.length(); i++) {
-
-            char symbol = reversed.charAt(i);
+            char ch = reversed.charAt(i);
 
             // Opening bracket
-            if (symbol == '(') {
-
-                push(symbol);
+            if (ch == '(') {
+                push(ch);
             }
 
             // Closing bracket
-            else if (symbol == ')') {
+            else if (ch == ')') {
 
                 while (top >= 0 && stack[top] != '(') {
-                    postfix.append(pop());
+                    temp[j] = pop();
+                    j++;
                 }
 
                 if (top >= 0) {
-                    pop(); // Remove '('
+                    pop();
                 }
             }
 
-            // Operator
-            else if (isOperator(symbol)) {
+            // + and -
+            else if (ch == '+' || ch == '-') {
 
                 while (top >= 0 &&
-                       stack[top] != '(' &&
-                       precedence(stack[top]) > precedence(symbol)) {
+                       (stack[top] == '^' ||
+                        stack[top] == '/' ||
+                        stack[top] == '*' ||
+                        stack[top] == '+' ||
+                        stack[top] == '-')) {
 
-                    postfix.append(pop());
+                    temp[j] = pop();
+                    j++;
                 }
 
-                push(symbol);
+                push(ch);
+            }
+
+            // * and /
+            else if (ch == '*' || ch == '/') {
+
+                while (top >= 0 &&
+                       (stack[top] == '^' ||
+                        stack[top] == '*' ||
+                        stack[top] == '/')) {
+
+                    temp[j] = pop();
+                    j++;
+                }
+
+                push(ch);
+            }
+
+            // ^
+            else if (ch == '^') {
+                push(ch);
             }
 
             // Operand
             else {
-
-                postfix.append(symbol);
+                temp[j] = ch;
+                j++;
             }
-
-            System.out.printf(
-                    "\n %2d\t  %c\t\t%-10s\t%s",
-                    step,
-                    symbol,
-                    getStack(),
-                    postfix
-            );
-
-            step++;
         }
 
         // Pop remaining operators
         while (top >= 0) {
-            postfix.append(pop());
+            temp[j] = pop();
+            j++;
         }
 
-        /*
-         * Step 4:
-         * Reverse postfix to get prefix
-         */
-        String prefix = postfix.reverse().toString();
-
-        System.out.println("\n----------------------------------------------");
-
+        // Reverse temporary result to get Prefix
         System.out.println("\n==============================================");
-        System.out.println("      PREFIX EXPRESSION = " + prefix);
+        System.out.print("      PREFIX EXPRESSION = ");
+
+        for (i = j - 1; i >= 0; i--) {
+            System.out.print(temp[i]);
+        }
+
+        System.out.println();
         System.out.println("==============================================");
 
         sc.close();
