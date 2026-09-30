@@ -16,7 +16,7 @@ Run `python generate_readme.py` from this directory to refresh the program index
 ## Repository Statistics
 
 - **Total Topics:** 5
-- **Total Programs:** 6
+- **Total Programs:** 7
 
 ## Index
 
@@ -55,8 +55,9 @@ Run `python generate_readme.py` from this directory to refresh the program index
 
 | No. | Program |
 |:---:|---------|
-| 1 | [SinglyLinkedList](./04-Linked-List/SinglyLinkedList.java) |
+| 1 | [DLL](./04-Linked-List/DLL.java) |
+| 2 | [sll](./04-Linked-List/sll.java) |
 
 ---
 
-**Last Updated:** 25 August 2026 12:12 PM
+**Last Updated:** 30 September 2026 11:56 AM
