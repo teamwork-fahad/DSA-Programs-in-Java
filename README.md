@@ -16,7 +16,7 @@ Run `python generate_readme.py` from this directory to refresh the program index
 ## Repository Statistics
 
 - **Total Topics:** 5
-- **Total Programs:** 7
+- **Total Programs:** 9
 
 ## Index
 
@@ -49,7 +49,9 @@ Run `python generate_readme.py` from this directory to refresh the program index
 
 | No. | Program |
 |:---:|---------|
-| 1 | [SimpleQueue](./03-Queue/SimpleQueue.java) |
+| 1 | [CircularQueue](./03-Queue/CircularQueue.java) |
+| 2 | [DoubleEndedQueue](./03-Queue/DoubleEndedQueue.java) |
+| 3 | [SimpleQueue](./03-Queue/SimpleQueue.java) |
 
 ## 04-Linked-List
 
@@ -60,4 +62,4 @@ Run `python generate_readme.py` from this directory to refresh the program index
 
 ---
 
-**Last Updated:** 30 September 2026 11:56 AM
+**Last Updated:** 30 September 2026 12:07 PM
