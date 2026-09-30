@@ -1,23 +1,31 @@
 import java.util.Scanner;
-public class sll
+
+public class DLL
 {
     // Node
     class Node
     {
         int data;
-        Node next;
+        Node next, prev;
+
         Node(int data)
         {
             this.data = data;
             next = null;
+            prev = null;
         }
     }
+
     Node head = null;
 
     // Insert at Beginning
     void insertBeg(int data)
     {
         Node newNode = new Node(data);
+        if (head != null)
+        {
+            head.prev = newNode;
+        }
         newNode.next = head;
         head = newNode;
         System.out.println("Inserted at beginning.");
@@ -39,6 +47,7 @@ public class sll
                 temp = temp.next;
             }
             temp.next = newNode;
+            newNode.prev = temp;
         }
         System.out.println("Inserted at end.");
     }
@@ -46,18 +55,32 @@ public class sll
     // Insert at Specific Position
     void insertPos(int data, int pos)
     {
+        if (pos < 1)
+        {
+            System.out.println("Invalid position.");
+            return;
+        }
+
         Node newNode = new Node(data);
+
         if (pos == 1)
         {
             newNode.next = head;
+            if (head != null)
+            {
+                head.prev = newNode;
+            }
             head = newNode;
+            System.out.println("Inserted at position " + pos);
             return;
         }
+
         Node temp = head;
         for (int i = 1; i < pos - 1 && temp != null; i++)
         {
             temp = temp.next;
         }
+
         if (temp == null)
         {
             System.out.println("Invalid position.");
@@ -65,6 +88,11 @@ public class sll
         else
         {
             newNode.next = temp.next;
+            newNode.prev = temp;
+            if (temp.next != null)
+            {
+                temp.next.prev = newNode;
+            }
             temp.next = newNode;
             System.out.println("Inserted at position " + pos);
         }
@@ -80,6 +108,10 @@ public class sll
         else
         {
             head = head.next;
+            if (head != null)
+            {
+                head.prev = null;
+            }
             System.out.println("Deleted from beginning.");
         }
     }
@@ -99,11 +131,11 @@ public class sll
         else
         {
             Node temp = head;
-            while (temp.next.next != null)
+            while (temp.next != null)
             {
                 temp = temp.next;
             }
-            temp.next = null;
+            temp.prev.next = null;
             System.out.println("Deleted from end.");
         }
     }
@@ -116,17 +148,30 @@ public class sll
             System.out.println("List is empty.");
             return;
         }
+
+        if (pos < 1)
+        {
+            System.out.println("Invalid position.");
+            return;
+        }
+
         if (pos == 1)
         {
             head = head.next;
+            if (head != null)
+            {
+                head.prev = null;
+            }
             System.out.println("Deleted from position 1.");
             return;
         }
+
         Node temp = head;
         for (int i = 1; i < pos - 1 && temp != null; i++)
         {
             temp = temp.next;
         }
+
         if (temp == null || temp.next == null)
         {
             System.out.println("Invalid position.");
@@ -134,6 +179,10 @@ public class sll
         else
         {
             temp.next = temp.next.next;
+            if (temp.next != null)
+            {
+                temp.next.prev = temp;
+            }
             System.out.println("Deleted from position " + pos);
         }
     }
@@ -146,10 +195,11 @@ public class sll
             System.out.println("List is empty.");
             return;
         }
+
         Node temp = head;
         while (temp != null)
         {
-            System.out.print(temp.data + " -> ");
+            System.out.print(temp.data + " <-> ");
             temp = temp.next;
         }
         System.out.println("NULL");
@@ -177,11 +227,11 @@ public class sll
     public static void main(String args[])
     {
         Scanner sc = new Scanner(System.in);
-        sll list = new sll();
+        DLL list = new DLL();
 
         while (true)
         {
-            System.out.println("\n===== SINGLY LINKED LIST =====");
+            System.out.println("\n===== DOUBLY LINKED LIST =====");
             System.out.println("1. Insert at Beginning");
             System.out.println("2. Insert at End");
             System.out.println("3. Insert at Position");
